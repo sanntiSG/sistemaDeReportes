@@ -1,0 +1,402 @@
+
+
+import React, { useState } from 'react';
+
+const ReportForm = ({ onSubmit }) => {
+  const [departamento, setDepartamento] = useState('');
+  const [mensaje, setMensaje] = useState('');
+  const [tituloReporte, setTituloReporte] = useState('');
+  const [prioridad, setPrioridad] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!departamento || !mensaje || !tituloReporte || !prioridad) {
+      alert('Por favor complete todos los campos');
+      return;
+    }
+    
+    const asunto = `[${prioridad === 'A' ? 'Alta' : prioridad === 'B' ? 'Media' : 'Baja'}] ${tituloReporte}`;
+    
+    const mensajeFormateado = `
+    <div style="font-family: 'Segoe UI', Arial, sans-serif; color: #333333; line-height: 1.6; max-width: 600px; margin: 0 auto;">
+      <div style="margin-bottom: 16px;">
+        <p style="margin: 0 0 4px 0; font-size: 14px;"><strong style="color: #0e3e85;">Departamento:</strong> ${departamento}</p>
+        <p style="margin: 0; font-size: 14px;">
+          <strong style="color: #0e3e85;">Prioridad:</strong> 
+          <span style="color: ${prioridad === 'A' ? '#D32F2F' : prioridad === 'B' ? '#FFA000' : '#388E3C'}; font-weight: 600;">
+            ${prioridad === 'A' ? 'Alta' : prioridad === 'B' ? 'Media' : 'Baja'}
+          </span>
+        </p>
+      </div>
+      
+      <div style="background-color: #f8f9fa; border-left: 4px solid #0e3e85; padding: 12px; margin: 12px 0;">
+        <p style="margin: 0 0 6px 0; font-size: 14px; color: #0e3e85; font-weight: 600;">Detalles del reporte:</p>
+        <div style="font-size: 14px; white-space: pre-wrap;">${mensaje}</div>
+      </div>
+    </div>
+    `;
+    
+    onSubmit({ 
+      departamento, 
+      mensaje: mensajeFormateado,
+      asunto,
+      prioridad
+    });
+    
+    setDepartamento('');
+    setMensaje('');
+    setTituloReporte('');
+    setPrioridad('');
+  };
+
+  return (
+    <div className="form-container">
+      <form onSubmit={handleSubmit} className="report-form">
+        <div className="form-header">
+          <h2 className="form-title">Sistema de Reportes</h2>
+          <p className="form-subtitle">Complete los detalles del reporte</p>
+        </div>
+        
+        <div className="form-body">
+          <div className="form-group">
+            <label htmlFor="titulo" className="form-label">Título del Reporte</label>
+            <input
+              id="titulo"
+              type="text"
+              placeholder="Ingrese el título del reporte"
+              value={tituloReporte}
+              onChange={(e) => setTituloReporte(e.target.value)}
+              className="form-input"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Prioridad</label>
+            <div className="priority-options">
+              <label className="priority-option">
+                <input
+                  type="radio"
+                  name="prioridad"
+                  value="A"
+                  checked={prioridad === 'A'}
+                  onChange={() => setPrioridad('A')}
+                  required
+                />
+                <span className="priority-tag priority-high">
+                  <span className="priority-level">Alta</span>
+                  <span className="priority-description">(Muy importante)</span>
+                </span>
+              </label>
+              
+              <label className="priority-option">
+                <input
+                  type="radio"
+                  name="prioridad"
+                  value="B"
+                  checked={prioridad === 'B'}
+                  onChange={() => setPrioridad('B')}
+                />
+                <span className="priority-tag priority-medium">
+                  <span className="priority-level">Media</span>
+                  <span className="priority-description">(Importante)</span>
+                </span>
+              </label>
+              
+              <label className="priority-option">
+                <input
+                  type="radio"
+                  name="prioridad"
+                  value="C"
+                  checked={prioridad === 'C'}
+                  onChange={() => setPrioridad('C')}
+                />
+                <span className="priority-tag priority-low">
+                  <span className="priority-level">Baja</span>
+                  <span className="priority-description">(Menos importante)</span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="departamento" className="form-label">Departamento</label>
+            <select
+              id="departamento"
+              value={departamento}
+              onChange={(e) => setDepartamento(e.target.value)}
+              className="form-select"
+              required
+            >
+              <option value="">Seleccione departamento</option>
+              <option value="procesos">Procesos</option>
+              <option value="calidad">Calidad</option>
+              <option value="ventas">Ventas</option>
+              <option value="soporte">Soporte Técnico</option>
+              <option value="marketing">Marketing</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="mensaje" className="form-label">Detalles del Reporte</label>
+            <textarea
+              id="mensaje"
+              placeholder={`FECHA = \nHORA = \nNº DE VIN = \nDESCRIPCIÓN = `}
+              value={mensaje}
+              onChange={(e) => setMensaje(e.target.value)}
+              className="form-textarea"
+              rows="5"
+              required
+            />
+          </div>
+        </div>
+
+        <div className="form-footer">
+          <button type="submit" className="submit-button">
+            <span>Enviar Reporte</span>
+            <svg className="icon" viewBox="0 0 24 24">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+
+      <style jsx>{`
+        .form-container {
+          max-width: 640px;
+          margin: 2rem auto;
+          padding: 0 1rem;
+        }
+        
+        .report-form {
+          background: white;
+          border-radius: 16px;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+          overflow: hidden;
+          transition: all 0.3s ease;
+        }
+        
+        .form-header {
+          background: linear-gradient(135deg, #0e3e85 0%, #1a56a8 100%);
+          padding: 1.5rem 2rem;
+          color: white;
+        }
+        
+        .form-title {
+          font-size: 1.5rem;
+          margin: 0;
+          font-weight: 600;
+        }
+        
+        .form-subtitle {
+          margin: 0.25rem 0 0;
+          opacity: 0.9;
+          font-size: 0.95rem;
+        }
+        
+        .form-body {
+          padding: 1.5rem 2rem;
+        }
+        
+        .form-group {
+          margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+          display: block;
+          margin-bottom: 0.5rem;
+          color: #2d3748;
+          font-weight: 500;
+          font-size: 0.95rem;
+        }
+        
+        .form-input {
+          width: 100%;
+          padding: 0.75rem 1rem;
+          border: 1px solid #e2e8f0;
+          border-radius: 8px;
+          font-size: 1rem;
+          transition: all 0.2s;
+          background-color: #f8fafc;
+        }
+        
+        .form-input:focus {
+          outline: none;
+          border-color: #0e3e85;
+          box-shadow: 0 0 0 3px rgba(14, 62, 133, 0.2);
+          background-color: white;
+        }
+        
+        .priority-options {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.75rem;
+          margin-top: 0.5rem;
+        }
+        
+        .priority-option {
+          display: flex;
+          flex-direction: column;
+        }
+        
+        .priority-option input {
+          position: absolute;
+          opacity: 0;
+        }
+        
+        .priority-tag {
+          padding: 0.75rem;
+          border-radius: 8px;
+          font-size: 0.9rem;
+          text-align: center;
+          cursor: pointer;
+          transition: all 0.2s;
+          border: 1px solid transparent;
+        }
+        
+        .priority-option input:checked + .priority-tag {
+          border-color: currentColor;
+          box-shadow: 0 0 0 2px currentColor;
+          transform: translateY(-2px);
+        }
+        
+        .priority-high {
+          background-color: rgba(220, 38, 38, 0.1);
+          color: #dc2626;
+        }
+        
+        .priority-medium {
+          background-color: rgba(234, 179, 8, 0.1);
+          color: #ca8a04;
+        }
+        
+        .priority-low {
+          background-color: rgba(34, 197, 94, 0.1);
+          color: #16a34a;
+        }
+        
+        .priority-level {
+          display: block;
+          font-weight: 600;
+          margin-bottom: 0.25rem;
+        }
+        
+        .priority-description {
+          font-size: 0.8rem;
+          opacity: 0.8;
+        }
+        
+        .form-select {
+          width: 100%;
+          padding: 0.75rem 1rem;
+          border: 1px solid #e2e8f0;
+          border-radius: 8px;
+          font-size: 1rem;
+          transition: all 0.2s;
+          background-color: #f8fafc;
+          appearance: none;
+          background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+          background-repeat: no-repeat;
+          background-position: right 1rem center;
+          background-size: 1em;
+        }
+        
+        .form-select:focus {
+          outline: none;
+          border-color: #0e3e85;
+          box-shadow: 0 0 0 3px rgba(14, 62, 133, 0.2);
+          background-color: white;
+        }
+        
+        .form-textarea {
+          width: 100%;
+          padding: 0.75rem 1rem;
+          border: 1px solid #e2e8f0;
+          border-radius: 8px;
+          font-size: 1rem;
+          min-height: 120px;
+          resize: vertical;
+          transition: all 0.2s;
+          background-color: #f8fafc;
+          font-family: inherit;
+          line-height: 1.5;
+        }
+        
+        .form-textarea:focus {
+          outline: none;
+          border-color: #0e3e85;
+          box-shadow: 0 0 0 3px rgba(14, 62, 133, 0.2);
+          background-color: white;
+        }
+        
+        .form-textarea::placeholder {
+          color: #a0aec0;
+          font-family: inherit;
+        }
+        
+        .form-footer {
+          padding: 1.5rem 2rem;
+          background-color: #f8fafc;
+          border-top: 1px solid #e2e8f0;
+        }
+        
+        .submit-button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          padding: 0.875rem 1.5rem;
+          background: linear-gradient(135deg, #0e3e85 0%, #1a56a8 100%);
+          color: white;
+          font-size: 1rem;
+          font-weight: 500;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 6px rgba(14, 62, 133, 0.15);
+        }
+        
+        .submit-button:hover {
+          background: linear-gradient(135deg, #1a56a8 0%, #0e3e85 100%);
+          transform: translateY(-2px);
+          box-shadow: 0 7px 14px rgba(14, 62, 133, 0.2);
+        }
+        
+        .submit-button:active {
+          transform: translateY(0);
+        }
+        
+        .submit-button span {
+          margin-right: 0.75rem;
+        }
+        
+        .icon {
+          width: 20px;
+          height: 20px;
+          fill: currentColor;
+        }
+        
+        @media (max-width: 640px) {
+          .form-header {
+            padding: 1.25rem 1.5rem;
+          }
+          
+          .form-body {
+            padding: 1.25rem 1.5rem;
+          }
+          
+          .form-footer {
+            padding: 1.25rem 1.5rem;
+          }
+          
+          .priority-options {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default ReportForm;
